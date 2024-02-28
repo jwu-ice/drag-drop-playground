@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply min-h-full w-full overflow-y-scroll pt-20;
+}
+
+/* 스크롤 관련 | firefox X */
+::-webkit-scrollbar {
+  @apply h-3 w-4;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-xl border-[5px] border-solid border-base-100 bg-primary-content/30;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-content/50;
+}
