@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply min-h-full w-full overflow-y-scroll pt-20;
+  @apply size-full overflow-y-scroll pt-20;
 }
 
 /* 스크롤 관련 | firefox X */

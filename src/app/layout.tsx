@@ -25,14 +25,16 @@ export default async function RootLayout({
   return (
     <html lang="ko" data-theme="business">
       <body className={` ${inter.className}`}>
-        <WidthContainer>
-          <Header />
-          <main className="min-h-[640px]">
-            {children}
-            <ToastProvider />
-          </main>
-          <Footer />
-        </WidthContainer>
+        <Suspense fallback={<Loading />}>
+          <WidthContainer>
+            <Header />
+            <main className="">
+              {children}
+              <ToastProvider />
+            </main>
+            <Footer />
+          </WidthContainer>
+        </Suspense>
       </body>
     </html>
   );

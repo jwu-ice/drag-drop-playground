@@ -10,7 +10,7 @@ const LinkList = ({ routes, classname }: Props) => {
   return (
     <div className={classname}>
       {routes?.map(({ href, name }) => {
-        return <ALink href={href} name={name} variant={""} key={href} />;
+        return <ALink href={href} name={name} key={href} />;
       })}
     </div>
   );
