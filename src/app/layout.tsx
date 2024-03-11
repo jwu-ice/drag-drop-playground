@@ -25,9 +25,9 @@ export default async function RootLayout({
   return (
     <html lang="ko" data-theme="business">
       <body className={` ${inter.className}`}>
-        <WidthContainer>
+        <WidthContainer className="flex flex-col">
           <Header />
-          <main className="">
+          <main className="flex-1">
             {children}
             <ToastProvider />
           </main>

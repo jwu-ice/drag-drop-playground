@@ -3,7 +3,7 @@ import { FOOTER_GITHUB } from "@/app/_common/routes";
 // tailwindcss footer 참고
 const Footer = () => {
   return (
-    <footer className=" mt-16 text-sm leading-6">
+    <footer className="mt-16 text-sm leading-6">
       <div className="flex justify-between border-t border-slate-200 pb-20 pt-5 text-base-content/30 dark:border-slate-200/5">
         <div className="mb-6 sm:mb-0 sm:flex">
           <p>Developed By Jwu-ice (쥬이스)</p>

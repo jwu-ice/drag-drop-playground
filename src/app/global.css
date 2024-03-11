@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html,body {
+  @apply h-full
+}
+
 body {
-  @apply size-full overflow-y-scroll pt-20;
+  @apply overflow-y-scroll pt-20;
 }
 
 /* 스크롤 관련 | firefox X */
