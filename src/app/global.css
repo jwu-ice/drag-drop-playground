@@ -2,23 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-html,body {
-  @apply h-full
+* {
+  list-style: none;
+  scrollbar-gutter: stable;
 }
 
-body {
-  @apply overflow-y-scroll pt-20;
+@layer base {
+
+  html,body {
+    @apply h-full ;
+  }
+  
+  body {
+    @apply overflow-y-scroll pt-20;
+  }
+ 
+    /* 스크롤 관련 | firefox X */
+  ::-webkit-scrollbar {
+    @apply w-4 h-4;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-xl border-[5px] border-solid border-base-100 bg-base-content/30;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-content/50;
+  }
+
+  p,span,div,li {
+    @apply text-pretty;
+  }
+
+  
+    
 }
 
-/* 스크롤 관련 | firefox X */
-::-webkit-scrollbar {
-  @apply h-3 w-4;
+.bg-rgba--base-content {
+  @apply bg-[rgba(205,205,205,1)]
+  /* background-color: oklch(var(--bc)/1) */
+  /* background-color: rgba(205, 205, 205, 1); */
 }
 
-::-webkit-scrollbar-thumb {
-  @apply rounded-xl border-[5px] border-solid border-base-100 bg-primary-content/30;
-}
 
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-content/50;
+@layer utilities {
+  .dragging-dark {
+    @apply opacity-100 bg-opacity-100
+  }
 }

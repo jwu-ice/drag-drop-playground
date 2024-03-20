@@ -4,11 +4,12 @@ import { cn } from "@/utils";
 
 type SkeletonVariantProps = VariantProps<typeof SkeletonVariants>;
 
-const SkeletonVariants = cva("flex w-full animate-pulse flex-col", {
+const SkeletonVariants = cva("flex animate-pulse flex-col", {
   variants: {
     variant: {
       card: "",
       cardList: "gap-4",
+      kanbanCard: "flex-row gap-4 overflow-x-auto p-2",
     },
   },
   defaultVariants: {
@@ -30,8 +31,17 @@ const Skeleton: FC<SkeletonProps> = ({ variant, outerProps, innerProps, children
         return <div className="h-16 w-full rounded-md bg-base-content shadow" {...innerProps} />;
 
       case "cardList":
-        return Array.from({ length: 4 }).map((_, i) => (
+        return [...Array(4)].map((_, i) => (
           <div key={i} className="h-16 w-full rounded-md bg-base-content shadow" {...innerProps} />
+        ));
+
+      case "kanbanCard":
+        return [...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="h-72 min-w-72 rounded-2xl border border-base-content bg-base-300/50 shadow"
+            {...innerProps}
+          />
         ));
     }
   };

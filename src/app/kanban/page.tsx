@@ -1,4 +1,12 @@
-import KanbanDnD from "@/components/kanban/KanbanDnD";
+import Skeleton from "@/components/_common/Skeleton";
+import dynamic from "next/dynamic";
+
+const KanbanDndArea = dynamic(() => import("@/components/kanban/KanbanDndArea"), {
+  loading: () => <Skeleton variant={"kanbanCard"} />,
+  ssr: false,
+});
+
+const items = null;
 
 const KanbanPage = () => {
   return (
@@ -12,7 +20,7 @@ const KanbanPage = () => {
           유연하게 대처하는 프로젝트 관리 방식입니다.
         </p>
       </div>
-      <KanbanDnD />
+      <KanbanDndArea items={items} />
     </section>
   );
 };

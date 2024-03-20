@@ -1,2 +1,2 @@
-export const META_TITLE = "Drag drop playground";
-export const META_DESC = "Drag drop playground test";
+export const META_TITLE = "Jwu's Playground";
+export const META_DESC = "Playground to record learned";

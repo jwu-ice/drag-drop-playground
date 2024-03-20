@@ -264,9 +264,10 @@ const NotFound404 = () => {
                 </defs>
               </svg>
             </div>
-            <p className="mb-4 p-2 text-sm text-base-content md:text-base">
-              {"The stuff you were looking for doesn't exist"}
-            </p>
+            <div className="mb-4 p-2 text-base text-base-content md:text-lg">
+              <p>해당 경로를 알 수 없습니다. 아니면 저의 멍청한 실수일 수 있습니다.</p>
+              <p>어떤 문제인지 알려주시면 감사하겠습니다.</p>
+            </div>
             <a
               href="/"
               className="rounded border border-yellow-300 bg-transparent px-4 py-2 text-yellow-300 shadow hover:border-transparent hover:bg-yellow-300/80 hover:text-white hover:shadow-lg"

@@ -1,15 +1,26 @@
+"use client";
+
 import { cn } from "@/utils";
+import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ComponentPropsWithoutRef, HTMLAttributes, PropsWithoutRef, memo } from "react";
+import { ComponentPropsWithoutRef, ElementType, memo } from "react";
 
-type Props = {
-  id: Todo["id"];
-  content: Todo["content"];
-  classname?: ComponentPropsWithoutRef<"li">["className"];
+type Props<T extends ElementType> = {
+  id: UniqueIdentifier;
+  content: string;
+  classname?: ComponentPropsWithoutRef<T>["className"];
+  index?: number;
+  getIndex?: (id: UniqueIdentifier) => number;
 };
 
-const TodoItem = ({ id, content, classname }: Props) => {
+const KanbanItem = <T extends ElementType>({
+  id,
+  content,
+  classname,
+  index,
+  getIndex: getColumnIndex,
+}: Props<T>) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id,
     transition: {
@@ -39,5 +50,4 @@ const TodoItem = ({ id, content, classname }: Props) => {
     </li>
   );
 };
-
-export default memo(TodoItem);
+export default memo(KanbanItem);

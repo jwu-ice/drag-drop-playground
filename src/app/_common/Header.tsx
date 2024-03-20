@@ -47,7 +47,7 @@ const Logo = () => {
   return (
     <Link
       href="/"
-      className="mr-12 flex text-2xl font-bold  hover:opacity-80 max-sm:mr-3 max-sm:flex-col "
+      className="mr-12 flex text-2xl font-bold  italic hover:opacity-80 max-sm:mr-3 max-sm:flex-col"
     >
       <span className="leading-5">Play</span>
       <span className="leading-5">ground</span>

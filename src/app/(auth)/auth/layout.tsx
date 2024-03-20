@@ -7,11 +7,7 @@ export const metadata = {
 };
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div style={{ height: `calc(100vh - ${NAVBAR_HEIGHT})` }}>
-      <div className="flex justify-center">{children}</div>
-    </div>
-  );
+  return <div className="flex justify-center">{children}</div>;
 };
 
 export default AuthLayout;
