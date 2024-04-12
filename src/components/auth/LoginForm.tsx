@@ -7,7 +7,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
 
-const SigninForm = () => {
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -66,7 +66,7 @@ const SigninForm = () => {
       </div>
       <div className="form-control mt-6">
         <button type="submit" className="btn btn-primary">
-          Sign in
+          Login
         </button>
       </div>
     </form>
@@ -77,4 +77,4 @@ function setIsLoading(arg0: boolean) {
   throw new Error("Function not implemented.");
 }
 
-export default SigninForm;
+export default LoginForm;

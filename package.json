@@ -35,10 +35,12 @@
     "postcss": "^8",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "react-textarea-autosize": "^8.5.3",
     "react-toastify": "10.0.4",
     "tailwind-merge": "^2.2.1",
     "tailwindcss": "^3.3.0",
     "typescript": "^5",
-    "universal-cookie": "^7.1.0"
+    "universal-cookie": "^7.1.0",
+    "zustand": "^4.5.2"
   }
 }

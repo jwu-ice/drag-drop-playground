@@ -1,59 +1,125 @@
 "use client";
 
 import { cn } from "@/utils";
-import { UniqueIdentifier } from "@dnd-kit/core";
-import { useSortable } from "@dnd-kit/sortable";
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactNode, useMemo } from "react";
+import { useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
+import { PlusCircle } from "lucide-react";
+import KanbanTask from "@/components/kanban/KanbanTask";
 
 type Props = {
-  id: UniqueIdentifier;
-  columnName: string | undefined;
-  columns?: number;
+  column: Column;
+  classname?: ComponentPropsWithoutRef<"li">["className"];
+  deleteColumn?: (id: Id) => void;
+  updateColumn?: (id: Id, title: string) => void;
+  createTask?: (id: Id) => void;
+  deleteTask?: (id: Id) => void;
+  updateTask?: (id: Id, content: string) => void;
+  tasks: Task[];
   children?: ReactNode;
 };
 
-const KanbanColumn = ({ id, columnName, columns, children, ...props }: Props) => {
+const KanbanColumn = ({
+  column,
+  classname,
+  deleteColumn,
+  updateColumn,
+  createTask,
+  deleteTask,
+  updateTask,
+  tasks,
+  children,
+  ...props
+}: Props) => {
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const tasksIds = tasks.map((task) => task.id);
+
   const {
-    active,
     attributes,
-    isDragging,
     listeners,
-    over,
+    isDragging,
     setNodeRef,
     transition,
     transform,
     setActivatorNodeRef,
   } = useSortable({
-    id,
+    id: column.id,
     data: {
       type: "column",
+      column,
     },
+    disabled: isEditMode,
   });
 
   const style = {
     transition,
     transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.5 : undefined,
   };
 
   return (
     <li
       ref={setNodeRef}
-      {...attributes}
       className={cn(
-        "h-full min-h-16 w-72 space-y-3 rounded-2xl border border-base-content bg-base-100/30 px-2 py-3 shadow-lg shadow-base-100",
+        "relative flex h-full min-h-16 w-64 flex-col rounded-2xl border border-base-content bg-base-100 shadow-lg shadow-base-100 max-sm:w-44",
+        isDragging && "opacity-50",
+        classname,
       )}
       style={style}
+      {...attributes}
       {...props}
     >
-      <div ref={setActivatorNodeRef} {...listeners}>
-        <h2 className="px-2">{columnName}</h2>
+      <div className="" ref={setActivatorNodeRef} {...listeners}>
+        <h2
+          className="px-2 pt-2 font-medium"
+          onClick={(e) => {
+            setIsEditMode(true);
+          }}
+        >
+          {isEditMode ? (
+            <TextareaAutosize
+              className="w-full rounded-lg bg-transparent px-2 py-1 ring-2"
+              autoFocus
+              spellCheck={false}
+              value={column.title}
+              onFocus={(e) => e.target.select()}
+              onChange={(e) => {
+                updateColumn && updateColumn(column.id, e.target.value);
+              }}
+              onBlur={() => {
+                setIsEditMode(false);
+              }}
+              onKeyDown={(e) => {
+                if (["Enter", "Escape"].some((v) => v === e.key)) {
+                  setIsEditMode(false);
+                }
+              }}
+            />
+          ) : (
+            <p className="break-words   px-2 py-[7px]">
+              {column.title.trim() === "" ? "Enter a title" : column.title}
+            </p>
+          )}
+        </h2>
       </div>
-      {children}
-      <div className="flex gap-2 px-2">
-        <button>+</button>
-        Add a card
+      <SortableContext items={tasksIds}>
+        <ol className="my-2 flex w-full grow flex-col gap-2 overflow-y-auto overflow-x-hidden px-2">
+          {tasks.map((task) => (
+            <KanbanTask key={task.id} task={task} deleteTask={deleteTask} updateTask={updateTask} />
+          ))}
+        </ol>
+      </SortableContext>
+
+      <div className="cursor-pointer px-2 pb-3 font-medium ">
+        <button
+          className="flex w-full items-center gap-2 rounded-lg p-2 opacity-80 focus-within:ring-2 hover:bg-base-content/10"
+          onClick={() => createTask && createTask(column.id)}
+        >
+          <PlusCircle size={18} />
+          Add a card
+        </button>
       </div>
     </li>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import TodoItem from "@/components/todo/TodoItem";
-import DragDropContext from "@/store/DragDropContext";
+import DragDropContext from "@/providers/DragDropContext";
 import {
   DragEndEvent,
   DragStartEvent,
@@ -43,14 +43,14 @@ const TodoDndArea = ({ staticData }: { staticData: Todo[] }) => {
   return (
     <DragDropContext id={useId()} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <SortableContext items={todos}>
-        <ul className="flex flex-col gap-3">
+        <ol className="flex flex-col gap-3">
           {todos.map((item, index) => {
             return <TodoItem key={item.id} id={item.id} content={item.content} />;
           })}
-        </ul>
+        </ol>
         <DragOverlay
           dropAnimation={{
-            duration: 100,
+            duration: 300,
             sideEffects: defaultDropAnimationSideEffects({
               className: {
                 active: "opacity-50",

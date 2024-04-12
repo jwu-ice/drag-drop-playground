@@ -2,6 +2,11 @@ import Link from "next/link";
 import WidthContainer from "@/components/_common/WidthContainer";
 import ALink from "@/components/_common/ALink";
 import { AUTH_ROUTES, NAV_ROUTES } from "@/app/_common/routes";
+import dynamic from "next/dynamic";
+
+const ThemeController = dynamic(() => import("@/components/_common/ThemeController"), {
+  ssr: false,
+});
 
 const Header = () => {
   return (
@@ -17,29 +22,14 @@ const Header = () => {
                 })}
               </div>
             </div>
-            <AuthNav />
+            <div className="flex">
+              <ThemeController />
+              <AuthNav />
+            </div>
           </div>
         </WidthContainer>
       </nav>
     </header>
-  );
-};
-
-const AuthNav = () => {
-  const [SIGNIN, SIGNUP] = AUTH_ROUTES;
-
-  return (
-    <div className="space-x-1">
-      <Link href={SIGNIN.href} className="btn btn-ghost btn-sm rounded-xl max-sm:btn-xs  ">
-        Sign in
-      </Link>
-      <Link
-        href={SIGNUP.href}
-        className="btn btn-ghost btn-sm rounded-xl max-sm:btn-xs max-sm:hidden "
-      >
-        Sign up
-      </Link>
-    </div>
   );
 };
 
@@ -52,6 +42,24 @@ const Logo = () => {
       <span className="leading-5">Play</span>
       <span className="leading-5">ground</span>
     </Link>
+  );
+};
+
+const AuthNav = () => {
+  const [LOGIN, SIGNUP] = AUTH_ROUTES;
+
+  return (
+    <div className="space-x-1">
+      <Link href={LOGIN.href} className="btn btn-ghost btn-sm rounded-xl max-sm:btn-xs  ">
+        {LOGIN.name}
+      </Link>
+      <Link
+        href={SIGNUP.href}
+        className="btn btn-ghost btn-sm rounded-xl max-sm:btn-xs max-sm:hidden "
+      >
+        {SIGNUP.name}
+      </Link>
+    </div>
   );
 };
 

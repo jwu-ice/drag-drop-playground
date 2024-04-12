@@ -7,8 +7,8 @@ import "./global.css";
 import WidthContainer from "@/components/_common/WidthContainer";
 import Header from "@/app/_common/Header";
 import Footer from "@/app/_common/Footer";
-import Loading from "@/app/loading";
 import { Suspense } from "react";
+import { DAISYUI_DARK_THEME } from "@/constants/theme";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +23,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-theme="business">
+    <html lang="ko" data-theme={DAISYUI_DARK_THEME}>
       <body className={` ${inter.className}`}>
         <WidthContainer className="flex flex-col">
           <Header />

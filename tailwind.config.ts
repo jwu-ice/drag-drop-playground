@@ -7,11 +7,16 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        pulse: "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+      },
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["business"],
+    // 첫 페이지 접속 시 운영체제의 테마 순서를 먼저 따른다. ["light", "dark"]
+    themes: ["emerald", "business"],
   },
 };
 export default config;

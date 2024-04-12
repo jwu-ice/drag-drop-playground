@@ -1,17 +1,14 @@
 type LinkType = Record<"href" | "name", string>;
 
-type Todo = {
-  id: string;
+type Id = string | number;
+
+type Column = {
+  id: Id;
   title: string;
-  content: string;
-  is_finished: boolean;
-  avatar_url: string;
-  date: string;
 };
 
-// deprecated
-type TodoType = {
-  id: string;
-  title: string;
+type Task = {
+  id: Id;
+  columnId: Id;
   content: string;
 };

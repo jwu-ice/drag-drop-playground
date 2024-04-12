@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 * {
+  box-sizing: border-box;
   list-style: none;
-  scrollbar-gutter: stable;
+  outline: none;
 }
 
 @layer base {
@@ -15,6 +16,10 @@
   
   body {
     @apply overflow-y-scroll pt-20;
+  }
+
+  textarea {
+    @apply resize-none;
   }
  
     /* 스크롤 관련 | firefox X */
@@ -48,5 +53,13 @@
 @layer utilities {
   .dragging-dark {
     @apply opacity-100 bg-opacity-100
+  }
+
+  .task ::-webkit-scrollbar-thumb {
+    @apply bg-base-content rounded-xl border-[2px]
+  }
+
+  .task ::-webkit-scrollbar {
+    @apply w-2 h-4
   }
 }

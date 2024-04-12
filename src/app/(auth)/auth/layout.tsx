@@ -1,4 +1,3 @@
-import { NAVBAR_HEIGHT } from "@/constants/layoutStyle";
 import React from "react";
 
 export const metadata = {

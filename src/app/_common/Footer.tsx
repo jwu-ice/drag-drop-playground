@@ -4,9 +4,9 @@ import { FOOTER_GITHUB } from "@/app/_common/routes";
 const Footer = () => {
   return (
     <footer className="mt-16 text-sm leading-6">
-      <div className="flex justify-between border-t border-slate-200 pb-20 pt-5 text-base-content/30 dark:border-slate-200/5">
+      <div className="flex justify-between border-t border-base-content/5 pb-20 pt-5 text-base-content/30">
         <div className="mb-6 sm:mb-0 sm:flex">
-          <p>Developed By 쥬</p>
+          <p>Developed By Jwu(쥬)</p>
         </div>
         <a href={FOOTER_GITHUB} className="hover:text-base-content/30 dark:hover:text-slate-400">
           <span className="sr-only">GitHub</span>
