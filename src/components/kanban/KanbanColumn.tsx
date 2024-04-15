@@ -10,7 +10,8 @@ import { PlusCircle } from "lucide-react";
 import KanbanTask from "@/components/kanban/KanbanTask";
 
 type Props = {
-  column: Column;
+  id: Id;
+  title: string;
   classname?: ComponentPropsWithoutRef<"li">["className"];
   deleteColumn?: (id: Id) => void;
   updateColumn?: (id: Id, title: string) => void;
@@ -22,7 +23,8 @@ type Props = {
 };
 
 const KanbanColumn = ({
-  column,
+  id,
+  title,
   classname,
   deleteColumn,
   updateColumn,
@@ -46,10 +48,9 @@ const KanbanColumn = ({
     transform,
     setActivatorNodeRef,
   } = useSortable({
-    id: column.id,
+    id: id,
     data: {
       type: "column",
-      column,
     },
     disabled: isEditMode,
   });
@@ -83,10 +84,10 @@ const KanbanColumn = ({
               className="w-full rounded-lg bg-transparent px-2 py-1 ring-2"
               autoFocus
               spellCheck={false}
-              value={column.title}
+              value={title}
               onFocus={(e) => e.target.select()}
               onChange={(e) => {
-                updateColumn && updateColumn(column.id, e.target.value);
+                updateColumn && updateColumn(id, e.target.value);
               }}
               onBlur={() => {
                 setIsEditMode(false);
@@ -99,7 +100,7 @@ const KanbanColumn = ({
             />
           ) : (
             <p className="break-words   px-2 py-[7px]">
-              {column.title.trim() === "" ? "Enter a title" : column.title}
+              {title.trim() === "" ? "Enter a title" : title}
             </p>
           )}
         </h2>
@@ -115,7 +116,7 @@ const KanbanColumn = ({
       <div className="cursor-pointer px-2 pb-3 font-medium ">
         <button
           className="flex w-full items-center gap-2 rounded-lg p-2 opacity-80 focus-within:ring-2 hover:bg-base-content/10"
-          onClick={() => createTask && createTask(column.id)}
+          onClick={() => createTask && createTask(id)}
         >
           <PlusCircle size={18} />
           Add a card
