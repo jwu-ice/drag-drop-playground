@@ -9,6 +9,7 @@ import Header from "@/app/_common/Header";
 import Footer from "@/app/_common/Footer";
 import { Suspense } from "react";
 import { DAISYUI_DARK_THEME } from "@/constants/theme";
+import ClientThemeProvider from "@/providers/ClientThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,16 +24,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-theme={DAISYUI_DARK_THEME}>
+    // suppressHydrationWarning
+    <html lang="ko" suppressHydrationWarning>
       <body className={` ${inter.className}`}>
-        <WidthContainer className="flex flex-col">
-          <Header />
-          <main className="flex-1">
-            {children}
-            <ToastProvider />
-          </main>
-          <Footer />
-        </WidthContainer>
+        <ClientThemeProvider>
+          <WidthContainer className="flex flex-col">
+            <Header />
+            <main className="flex-1">
+              {children}
+              <ToastProvider />
+            </main>
+            <Footer />
+          </WidthContainer>
+        </ClientThemeProvider>
       </body>
     </html>
   );
