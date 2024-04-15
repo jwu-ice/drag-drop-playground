@@ -9,6 +9,7 @@ import {
   CollisionDetection,
   defaultDropAnimationSideEffects,
   DragEndEvent,
+  DragMoveEvent,
   DragOverEvent,
   DragOverlay,
   DragStartEvent,
@@ -43,8 +44,8 @@ const initialTask = [
 ] as Task[];
 
 const KanbanDndArea = () => {
-  const [columns, setColumns] = useState<Column[]>(initialColumn ?? []);
-  const [tasks, setTasks] = useState<Task[]>(initialTask ?? []);
+  const [columns, setColumns] = useState<Column[]>(initialColumn);
+  const [tasks, setTasks] = useState<Task[]>(initialTask);
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
@@ -59,6 +60,7 @@ const KanbanDndArea = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
+        onDragMove={handleDragMove}
       >
         <SortableContext items={columnsId}>
           <ol className="mb-12 flex h-full gap-4 ">
@@ -67,7 +69,8 @@ const KanbanDndArea = () => {
               return (
                 <KanbanColumn
                   key={id}
-                  column={col}
+                  id={id}
+                  title={title}
                   deleteColumn={deleteColumn}
                   updateColumn={updateColumn}
                   createTask={createTask}
@@ -92,7 +95,8 @@ const KanbanDndArea = () => {
           >
             {activeColumn && (
               <KanbanColumn
-                column={activeColumn}
+                id={activeColumn.id}
+                title={activeColumn.title}
                 classname="opacity-90 rotate-3"
                 tasks={tasks.filter((task) => task.columnId === activeColumn.id)}
               />
@@ -167,14 +171,24 @@ const KanbanDndArea = () => {
     setActiveId(active.id);
 
     if (active.data.current?.type === "column") {
-      setActiveColumn(active.data.current.column);
+      const findColumn = columns.find((column) => column.id === active.id) ?? null;
+      setActiveColumn(findColumn);
       return;
     }
 
     if (active.data.current?.type === "task") {
-      setActiveTask(active.data.current.task);
+      const findTask = tasks.find((task) => task.id === active.id) ?? null;
+      setActiveTask(findTask);
       return;
     }
+  }
+
+  function handleDragMove(event: DragMoveEvent) {
+    const { active, over } = event;
+    console.log("---DragMove---");
+    console.log("active.id", active.id);
+    // Handle Items Sorting
+    // if(active.id.toString().includes(""))
   }
 
   function handleDragEnd(event: DragEndEvent) {
@@ -238,8 +252,8 @@ const KanbanDndArea = () => {
           tasks[activeIndex].columnId = tasks[overIndex].columnId;
         }
 
-        const resultArray = arrayMove(tasks, activeIndex, overIndex);
         console.log("-- setTasks ---", tasks, activeIndex, overIndex);
+        const resultArray = arrayMove(tasks, activeIndex, overIndex);
         return resultArray;
       });
     }

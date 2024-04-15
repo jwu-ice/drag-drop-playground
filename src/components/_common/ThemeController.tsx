@@ -1,28 +1,20 @@
 "use client";
 
 import { DAISYUI_DARK_THEME, DAISYUI_LIGHT_THEME, THEME_STORAGE_KEY } from "@/constants/theme";
-import { ThemeStore, useSetTheme, useTheme } from "@/stores/theme-store";
+import { useTheme } from "@/hooks/useTheme";
+import useThemeStore from "@/stores/useThemeStore";
 // import useTheme from "@/hooks/useTheme";
 import { cn } from "@/utils";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const ThemeController = () => {
-  const theme = useTheme();
-  const setTheme = useSetTheme();
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
+  // 첫 로드 시 테마에 따라 해 달 이미지 변경
   const initialTheme = useRef(theme);
 
-  useEffect(() => {
-    try {
-      const localTheme = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) ?? DAISYUI_LIGHT_THEME);
-      if (localTheme) {
-        // localStorage.setItem(THEME_STORAGE_KEY, theme);
-        document.documentElement.dataset.theme = localTheme.state.theme;
-      }
-    } catch (err) {
-      console.log("error loading the color theme");
-    }
-  }, [theme]);
+  useTheme();
 
   // useEffect(() => {
   //   initialTheme.current = theme;
@@ -31,7 +23,7 @@ const ThemeController = () => {
   return (
     <label className="btn btn-ghost swap swap-flip btn-sm rounded-xl max-sm:btn-xs ">
       {/* this hidden checkbox controls the state */}
-      <input type="checkbox" onClick={setTheme} className="theme-controller" />
+      <input type="checkbox" onClick={toggleTheme} className="theme-controller" />
 
       {/* sun icon */}
       <svg
