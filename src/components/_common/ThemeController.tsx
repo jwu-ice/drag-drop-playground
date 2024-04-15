@@ -1,21 +1,24 @@
 "use client";
 
 import { DAISYUI_DARK_THEME, DAISYUI_LIGHT_THEME, THEME_STORAGE_KEY } from "@/constants/theme";
-import { useTheme } from "@/hooks/useTheme";
-import useThemeStore from "@/stores/useThemeStore";
-// import useTheme from "@/hooks/useTheme";
+// import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/utils";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { clear } from "console";
+import { useTheme } from "next-themes";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const ThemeController = () => {
-  const theme = useThemeStore((state) => state.theme);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const { theme, setTheme } = useTheme();
 
-  // 첫 로드 시 테마에 따라 해 달 이미지 변경
+  const toggleTheme = () => {
+    setTheme(theme === DAISYUI_DARK_THEME ? DAISYUI_LIGHT_THEME : DAISYUI_DARK_THEME);
+  };
+
   const initialTheme = useRef(theme);
 
-  useTheme();
+  // useTheme();
 
+  // useEffect only runs on the client, so now we can safely show the UI
   // useEffect(() => {
   //   initialTheme.current = theme;
   // }, []);
