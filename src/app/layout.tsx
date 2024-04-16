@@ -23,7 +23,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" data-theme={DAISYUI_DARK_THEME}>
+    // suppressHydrationWarning
+    <html lang="ko" data-theme={DAISYUI_DARK_THEME} suppressHydrationWarning>
       <body className={` ${inter.className}`}>
         <WidthContainer className="flex flex-col">
           <Header />

@@ -12,3 +12,8 @@ type Task = {
   columnId: Id;
   content: string;
 };
+
+type Todo = {
+  id: Id;
+  content: string;
+};
