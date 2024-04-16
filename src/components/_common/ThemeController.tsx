@@ -1,29 +1,24 @@
 "use client";
 
 import { DAISYUI_DARK_THEME, DAISYUI_LIGHT_THEME, THEME_STORAGE_KEY } from "@/constants/theme";
-import { ThemeStore, useSetTheme, useTheme } from "@/stores/theme-store";
-// import useTheme from "@/hooks/useTheme";
+// import { useTheme } from "@/hooks/useTheme";
 import { cn } from "@/utils";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { clear } from "console";
+import { useTheme } from "next-themes";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const ThemeController = () => {
-  const theme = useTheme();
-  const setTheme = useSetTheme();
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === DAISYUI_DARK_THEME ? DAISYUI_LIGHT_THEME : DAISYUI_DARK_THEME);
+  };
 
   const initialTheme = useRef(theme);
 
-  useEffect(() => {
-    try {
-      const localTheme = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) ?? DAISYUI_LIGHT_THEME);
-      if (localTheme) {
-        // localStorage.setItem(THEME_STORAGE_KEY, theme);
-        document.documentElement.dataset.theme = localTheme.state.theme;
-      }
-    } catch (err) {
-      console.log("error loading the color theme");
-    }
-  }, [theme]);
+  // useTheme();
 
+  // useEffect only runs on the client, so now we can safely show the UI
   // useEffect(() => {
   //   initialTheme.current = theme;
   // }, []);
@@ -31,7 +26,7 @@ const ThemeController = () => {
   return (
     <label className="btn btn-ghost swap swap-flip btn-sm rounded-xl max-sm:btn-xs ">
       {/* this hidden checkbox controls the state */}
-      <input type="checkbox" onClick={setTheme} className="theme-controller" />
+      <input type="checkbox" onClick={toggleTheme} className="theme-controller" />
 
       {/* sun icon */}
       <svg

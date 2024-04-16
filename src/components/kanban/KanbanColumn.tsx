@@ -10,7 +10,8 @@ import { PlusCircle } from "lucide-react";
 import KanbanTask from "@/components/kanban/KanbanTask";
 
 type Props = {
-  column: Column;
+  id: Id;
+  title: string;
   classname?: ComponentPropsWithoutRef<"li">["className"];
   deleteColumn?: (id: Id) => void;
   updateColumn?: (id: Id, title: string) => void;
@@ -22,7 +23,8 @@ type Props = {
 };
 
 const KanbanColumn = ({
-  column,
+  id,
+  title,
   classname,
   deleteColumn,
   updateColumn,
@@ -46,10 +48,9 @@ const KanbanColumn = ({
     transform,
     setActivatorNodeRef,
   } = useSortable({
-    id: column.id,
+    id: id,
     data: {
       type: "column",
-      column,
     },
     disabled: isEditMode,
   });
@@ -61,14 +62,14 @@ const KanbanColumn = ({
 
   return (
     <li
+      {...attributes}
       ref={setNodeRef}
+      style={style}
       className={cn(
-        "relative flex h-full min-h-16 w-64 flex-col rounded-2xl border border-base-content bg-base-100 shadow-lg shadow-base-100 max-sm:w-44",
+        "relative flex h-fit min-h-16 w-64 flex-col rounded-2xl border border-base-content bg-base-100 shadow-lg shadow-base-100 max-sm:w-44 ",
         isDragging && "opacity-50",
         classname,
       )}
-      style={style}
-      {...attributes}
       {...props}
     >
       <div className="" ref={setActivatorNodeRef} {...listeners}>
@@ -83,10 +84,10 @@ const KanbanColumn = ({
               className="w-full rounded-lg bg-transparent px-2 py-1 ring-2"
               autoFocus
               spellCheck={false}
-              value={column.title}
+              value={title}
               onFocus={(e) => e.target.select()}
               onChange={(e) => {
-                updateColumn && updateColumn(column.id, e.target.value);
+                updateColumn && updateColumn(id, e.target.value);
               }}
               onBlur={() => {
                 setIsEditMode(false);
@@ -98,24 +99,23 @@ const KanbanColumn = ({
               }}
             />
           ) : (
-            <p className="break-words   px-2 py-[7px]">
-              {column.title.trim() === "" ? "Enter a title" : column.title}
+            <p className="break-words px-2 py-[7px]">
+              {title.trim() === "" ? "Enter a title" : title}
             </p>
           )}
         </h2>
       </div>
       <SortableContext items={tasksIds}>
-        <ol className="my-2 flex w-full grow flex-col gap-2 overflow-y-auto overflow-x-hidden px-2">
+        <ol className="my-2 flex max-h-dvh w-full grow flex-col gap-2 overflow-y-scroll pl-3">
           {tasks.map((task) => (
             <KanbanTask key={task.id} task={task} deleteTask={deleteTask} updateTask={updateTask} />
           ))}
         </ol>
       </SortableContext>
-
       <div className="cursor-pointer px-2 pb-3 font-medium ">
         <button
           className="flex w-full items-center gap-2 rounded-lg p-2 opacity-80 focus-within:ring-2 hover:bg-base-content/10"
-          onClick={() => createTask && createTask(column.id)}
+          onClick={() => createTask && createTask(id)}
         >
           <PlusCircle size={18} />
           Add a card
