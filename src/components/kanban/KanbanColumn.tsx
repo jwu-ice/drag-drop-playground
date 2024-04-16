@@ -62,14 +62,14 @@ const KanbanColumn = ({
 
   return (
     <li
+      {...attributes}
       ref={setNodeRef}
+      style={style}
       className={cn(
-        "relative flex h-full min-h-16 w-64 flex-col rounded-2xl border border-base-content bg-base-100 shadow-lg shadow-base-100 max-sm:w-44",
+        "relative flex h-fit min-h-16 w-64 flex-col rounded-2xl border border-base-content bg-base-100 shadow-lg shadow-base-100 max-sm:w-44 ",
         isDragging && "opacity-50",
         classname,
       )}
-      style={style}
-      {...attributes}
       {...props}
     >
       <div className="" ref={setActivatorNodeRef} {...listeners}>
@@ -99,20 +99,19 @@ const KanbanColumn = ({
               }}
             />
           ) : (
-            <p className="break-words   px-2 py-[7px]">
+            <p className="break-words px-2 py-[7px]">
               {title.trim() === "" ? "Enter a title" : title}
             </p>
           )}
         </h2>
       </div>
       <SortableContext items={tasksIds}>
-        <ol className="my-2 flex w-full grow flex-col gap-2 overflow-y-auto overflow-x-hidden px-2">
+        <ol className="my-2 flex max-h-dvh w-full grow flex-col gap-2 overflow-y-scroll pl-3">
           {tasks.map((task) => (
             <KanbanTask key={task.id} task={task} deleteTask={deleteTask} updateTask={updateTask} />
           ))}
         </ol>
       </SortableContext>
-
       <div className="cursor-pointer px-2 pb-3 font-medium ">
         <button
           className="flex w-full items-center gap-2 rounded-lg p-2 opacity-80 focus-within:ring-2 hover:bg-base-content/10"

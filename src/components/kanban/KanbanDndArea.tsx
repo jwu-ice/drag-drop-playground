@@ -19,8 +19,13 @@ import {
   rectIntersection,
   UniqueIdentifier,
 } from "@dnd-kit/core";
-import { SortableContext, arrayMove } from "@dnd-kit/sortable";
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 const initialColumn = [
@@ -36,34 +41,33 @@ const initialColumn = [
 ] as Column[];
 
 const initialTask = [
-  { id: "100", columnId: "1", content: "task 100" },
-  { id: "200", columnId: "1", content: "task 200" },
-  { id: "300", columnId: "1", content: "task 300" },
-  { id: "400", columnId: "2", content: "task 400" },
-  { id: "500", columnId: "2", content: "task 500" },
+  { columnId: "1", id: "100", content: "task 100" },
+  { columnId: "1", id: "200", content: "task 200" },
+  { columnId: "1", id: "300", content: "task 300" },
+  { columnId: "2", id: "400", content: "task 400" },
+  { columnId: "2", id: "500", content: "task 500" },
 ] as Task[];
 
 const KanbanDndArea = () => {
   const [columns, setColumns] = useState<Column[]>(initialColumn);
   const [tasks, setTasks] = useState<Task[]>(initialTask);
 
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
+  const columnsId = columns.map((col) => col.id);
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   return (
-    <div className="flex h-full flex-1 overflow-x-auto bg-transparent py-2">
+    <div className="flex overflow-x-auto bg-transparent">
+      {/* BUG: DragOver, 태스크의 개수가 적은(높이가 작은) 컬럼에서 큰 컬럼 이동 시 문제
+               active column, over가 column이 아닌 task 찍히는 문제가 있음.  */}
       <DragDropContext
-        id={useId()}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
-        onDragMove={handleDragMove}
       >
         <SortableContext items={columnsId}>
-          <ol className="mb-12 flex h-full gap-4 ">
+          <ol className="mb-12 flex h-full gap-4">
             {columns.map((col) => {
               const { id, title } = col;
               return (
@@ -76,7 +80,7 @@ const KanbanDndArea = () => {
                   createTask={createTask}
                   deleteTask={deleteTask}
                   updateTask={updateTask}
-                  tasks={tasks.filter((task) => task.columnId === col.id)}
+                  tasks={tasks.filter((task) => task.columnId === id)}
                 />
               );
             })}
@@ -101,7 +105,7 @@ const KanbanDndArea = () => {
                 tasks={tasks.filter((task) => task.columnId === activeColumn.id)}
               />
             )}
-            {activeTask && <KanbanTask task={activeTask} classname={"opacity-90 rotate-3"} />}
+            {activeTask && <KanbanTask task={activeTask} classname={"opacity-90 rotate-3 "} />}
           </DragOverlay>,
           document.body,
         )}
@@ -118,9 +122,9 @@ const KanbanDndArea = () => {
 
   function createTask(columnId: Id) {
     const newTask: Task = {
-      id: generateId(),
       columnId,
-      content: `Task ${tasks.length + 1}`,
+      id: generateId(),
+      content: `task ${tasks.length + 1}`,
     };
 
     setTasks([...tasks, newTask]);
@@ -132,7 +136,10 @@ const KanbanDndArea = () => {
   }
 
   function updateTask(id: Id, content: string) {
-    const newTasks = tasks.map((task) => (task.id === id ? { ...task, content } : task));
+    const newTasks = tasks.map((task) => {
+      const newTask = { ...task, content };
+      return task.id === id ? newTask : task;
+    });
     setTasks(newTasks);
   }
 
@@ -168,7 +175,6 @@ const KanbanDndArea = () => {
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
-    setActiveId(active.id);
 
     if (active.data.current?.type === "column") {
       const findColumn = columns.find((column) => column.id === active.id) ?? null;
@@ -183,94 +189,158 @@ const KanbanDndArea = () => {
     }
   }
 
-  function handleDragMove(event: DragMoveEvent) {
-    const { active, over } = event;
+  function handleDragOver(event: DragMoveEvent) {
+    const { active, over, activatorEvent, collisions } = event;
+    console.log("activatorEvent", activatorEvent);
+    console.log("collisions", collisions);
     console.log("---DragMove---");
     console.log("active.id", active.id);
+    console.log("over.id", over?.id);
     // Handle Items Sorting
-    // if(active.id.toString().includes(""))
+    if (
+      active.data.current?.type === "task" &&
+      over?.data.current?.type === "task" &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      console.log("1. 태스크끼리 놨을 때");
+      const activeColumn = findColumnUsingId(active.id, "task");
+      const overColumn = findColumnUsingId(over.id, "task");
+
+      if (!activeColumn || !overColumn) return;
+
+      const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
+      const overTaskIndex = tasks.findIndex((task) => task.id === over.id);
+
+      if (activeColumn.id === overColumn.id) {
+        console.log("2. 태스크끼리 같은 컬럼일 때");
+
+        const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
+        setTasks(newTasks);
+      } else {
+        console.log("3. 태스크끼리 다른 컬럼일 때");
+        tasks[activeTaskIndex].columnId = tasks[overTaskIndex].columnId;
+
+        const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
+        setTasks(newTasks);
+      }
+    }
+
+    // 태스크를 컬럼에 놨을 때
+    if (
+      active.data.current?.type === "task" &&
+      over?.data.current?.type === "column" &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      console.log("4. 태스크를 컬럼에 놨을 때");
+      const activeColumn = findColumnUsingId(active.id, "task");
+      const overColumn = findColumnUsingId(over.id, "column");
+
+      if (!activeColumn || !overColumn) return;
+
+      const activeTaskIndex = tasks.findIndex((task) => task.columnId === activeColumn.id);
+
+      let newTasks = [...tasks];
+      newTasks[activeTaskIndex].columnId = overColumn.id;
+      setTasks(newTasks);
+    }
+
+    // if (
+    //   active.data.current?.type === "column" &&
+    //   over?.data.current?.type === "task" &&
+    //   active &&
+    //   over &&
+    //   active.id !== over.id
+    // ) {
+    //   const activeColumnIndex = columns.findIndex((column) => column.id === active.id);
+
+    //   const columnIdOfOverTask = tasks.find((task) => task.id === over.id)?.columnId;
+    //   const overColumnIndex = columns.findIndex((column) => column.id === columnIdOfOverTask);
+
+    //   const newColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
+    //   setColumns(newColumns);
+    // }
   }
 
   function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
     setActiveColumn(null);
     setActiveTask(null);
 
-    const { active, over } = event;
-    console.log("active, over", active, over);
+    if (
+      active.data.current?.type === "column" &&
+      over?.data.current?.type === "column" &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      const activeColumnIndex = columns.findIndex((column) => column.id === active.id);
+      const overColumnIndex = columns.findIndex((column) => column.id === over.id);
 
-    if (!over) return;
-    if (active.id === over.id) return;
+      const newColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
+      setColumns(newColumns);
+    }
 
-    const isActiveColumn = active.data.current?.type === "column";
-    if (!isActiveColumn) return;
+    if (
+      active.data.current?.type === "task" &&
+      over?.data.current?.type === "task" &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      const activeColumn = findColumnUsingId(active.id, "task");
+      const overColumn = findColumnUsingId(over.id, "task");
 
-    console.log("DRAG END");
-    setColumns((columns) => {
-      const activeColumnIndex = columns.findIndex((col) => col.id === active.id);
-      const overColumnIndex = columns.findIndex((col) => {
-        if (col.id === over?.id) return true;
-        // if (col.id === over.data.current?.task?.columnId) return true;
-      });
-      const result = arrayMove(columns, activeColumnIndex, overColumnIndex);
-      return result;
-    });
+      if (!activeColumn || !overColumn) return;
+
+      const activeColumnIndex = columns.findIndex((column) => column.id === activeColumn.id);
+      const overColumnIndex = columns.findIndex((column) => column.id === overColumn.id);
+
+      const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
+      const overTaskIndex = tasks.findIndex((task) => task.id === over.id);
+
+      if (activeColumnIndex === overColumnIndex) {
+        const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
+        setTasks(newTasks);
+      } else {
+        tasks[activeTaskIndex].columnId = tasks[overTaskIndex].columnId;
+
+        const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
+        setTasks(newTasks);
+      }
+
+      //  컬럼에 태스크 놓을 때
+      if (
+        active.data.current?.type === "task" &&
+        over?.data.current?.type === "column" &&
+        active &&
+        over &&
+        active.id !== over.id
+      ) {
+        const activeColumn = findColumnUsingId(active.id, "task");
+        const overColumn = findColumnUsingId(over.id, "column");
+
+        if (!activeColumn || !overColumn) return;
+
+        const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
+
+        const newTasks = [...tasks];
+        newTasks[activeTaskIndex].columnId = over.id;
+        setTasks(newTasks);
+      }
+    }
   }
-
-  function handleDragOver(event: DragOverEvent) {
-    console.log("DRAG OVER START");
-    const { active, over } = event;
-    console.log("columnsId", columnsId);
-
-    if (!over) return;
-
-    setActiveId(active.id);
-    console.log("activeId", activeId);
-
-    const overId = over.id;
-    console.log("overId", overId);
-
-    if (activeId === overId) {
-      return;
+  function findColumnUsingId(id: UniqueIdentifier | undefined, type: "column" | "task") {
+    if (type === "column") {
+      return columns.find((column) => column.id === id);
     }
 
-    const isActiveTask = active.data.current?.type === "task";
-    const isOverTask = over.data.current?.type === "task";
-
-    if (!isActiveTask) return;
-
-    // 1. dropping a task over another task
-    // 태스크 끼리 옮길 때
-    if (isActiveTask && isOverTask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((task) => task.id === activeId);
-        const overIndex = tasks.findIndex((task) => task.id === overId);
-
-        if (!tasks[overIndex]) return tasks;
-
-        console.log("columnId", tasks[activeIndex].columnId, tasks[overIndex].columnId);
-        if (tasks[activeIndex].columnId != tasks[overIndex].columnId) {
-          tasks[activeIndex].columnId = tasks[overIndex].columnId;
-        }
-
-        console.log("-- setTasks ---", tasks, activeIndex, overIndex);
-        const resultArray = arrayMove(tasks, activeIndex, overIndex);
-        return resultArray;
-      });
-    }
-
-    // 2. dropping a task over a column
-    const isOverColumn = over.data.current?.type === "column";
-
-    // 태스크를 고르고 컬럼에다 놨을 때
-    if (isOverColumn) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((task) => task.id === activeId);
-
-        tasks[activeIndex].columnId = overId;
-
-        const resultArray = arrayMove(tasks, activeIndex, activeIndex);
-        return resultArray;
-      });
+    if (type === "task") {
+      const findColumnId = tasks.find((task) => task.id === id)?.columnId;
+      return columns.find((column) => column.id === findColumnId);
     }
   }
 };

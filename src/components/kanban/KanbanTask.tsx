@@ -31,11 +31,6 @@ const KanbanTask = <T extends ElementType>({
     id: task.id,
     data: {
       type: "task",
-      task,
-    },
-    transition: {
-      duration: 300,
-      easing: "ease",
     },
     disabled: isEditMode,
   });
@@ -59,14 +54,15 @@ const KanbanTask = <T extends ElementType>({
         {...listeners}
         style={style}
         className={cn(
-          "task flex min-h-16 w-full flex-auto cursor-grab items-center justify-between gap-4 rounded-lg  bg-base-content/80 p-3 text-left shadow-2xl hover:ring-2 hover:ring-inset hover:ring-base-content/50 ",
+          "flex cursor-grab items-center justify-between gap-4 rounded-lg  bg-base-content/80 p-3 text-left shadow-2xl hover:ring-2 hover:ring-inset hover:ring-base-content/50",
           [isEditMode && "ring-2 ring-inset ring-blue-400"],
         )}
       >
         <TextareaAutosize
-          className=" h-[90%] w-full  resize-none bg-transparent focus:outline-none"
+          className=" h-[90%] w-full resize-none overflow-y-hidden  bg-transparent py-2 leading-6 focus:outline-none"
           value={task.content}
           autoFocus
+          spellCheck={false}
           placeholder="Write a task"
           onFocus={(e) => e.target.select()}
           onBlur={toggleEditMode}
@@ -86,13 +82,13 @@ const KanbanTask = <T extends ElementType>({
       {...attributes}
       {...listeners}
       className={cn(
-        "task relative flex min-h-16 w-full flex-auto cursor-grab items-center justify-between gap-4 rounded-lg bg-base-content p-3 text-base-100 shadow-2xl focus-within:ring-2 focus-within:ring-inset hover:ring-2 hover:ring-inset hover:ring-base-content/50 ",
+        "flex h-full cursor-grab items-center justify-between gap-4  rounded-lg bg-base-content p-3 text-base-100 shadow-2xl focus-within:ring-2 focus-within:ring-inset hover:ring-2 hover:ring-inset hover:ring-base-content/50",
         [isDragging && "opacity-50"],
         classname,
       )}
       style={style}
       onClick={toggleEditMode}
-      onMouseEnter={() => setIsMouseOver(true)}
+      onMouseEnter={() => classname || setIsMouseOver(true)}
       onMouseLeave={() => setIsMouseOver(false)}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -101,10 +97,10 @@ const KanbanTask = <T extends ElementType>({
         }
       }}
     >
-      <p className="w-full break-words">{task.content}</p>
+      <p className="size-full break-words py-2">{task.content}</p>
       {isMouseOver && (
         <button
-          className="absolute right-2 rounded-lg stroke-base-content/60 p-1 opacity-60  hover:opacity-100"
+          className="absolute right-5 rounded-lg stroke-base-content/60 p-1 opacity-60  hover:opacity-10 "
           onClick={() => {
             deleteTask && deleteTask(task.id);
           }}
