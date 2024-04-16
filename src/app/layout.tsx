@@ -25,7 +25,7 @@ export default async function RootLayout({
 }>) {
   return (
     // suppressHydrationWarning
-    <html lang="ko" data-theme={DAISYUI_DARK_THEME} suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <body className={` ${inter.className}`}>
         <ClientThemeProvider>
           <WidthContainer className="flex flex-col">

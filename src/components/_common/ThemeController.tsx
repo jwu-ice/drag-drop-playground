@@ -8,20 +8,11 @@ import { useTheme } from "next-themes";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const ThemeController = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, systemTheme } = useTheme();
 
   const toggleTheme = () => {
     setTheme(theme === DAISYUI_DARK_THEME ? DAISYUI_LIGHT_THEME : DAISYUI_DARK_THEME);
   };
-
-  const initialTheme = useRef(theme);
-
-  // useTheme();
-
-  // useEffect only runs on the client, so now we can safely show the UI
-  // useEffect(() => {
-  //   initialTheme.current = theme;
-  // }, []);
 
   return (
     <label className="btn btn-ghost swap swap-flip btn-sm rounded-xl max-sm:btn-xs ">
@@ -30,10 +21,7 @@ const ThemeController = () => {
 
       {/* sun icon */}
       <svg
-        className={cn(
-          "size-5 fill-current",
-          initialTheme.current === DAISYUI_LIGHT_THEME ? "swap-off" : "swap-on",
-        )}
+        className={cn("size-5 fill-current", [systemTheme === "light" ? "swap-off" : "swap-on"])}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
@@ -42,10 +30,7 @@ const ThemeController = () => {
 
       {/* moon icon */}
       <svg
-        className={cn(
-          "size-5 fill-current",
-          initialTheme.current === DAISYUI_DARK_THEME ? "swap-off" : "swap-on",
-        )}
+        className={cn("size-5 fill-current", [systemTheme === "dark" ? "swap-off" : "swap-on"])}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
