@@ -20,7 +20,7 @@ const KanbanPage = () => {
           방식이에요.
         </p>
       </div>
-      <div className="relative">
+      <div className="mt-6">
         <KanbanDndArea />
       </div>
     </section>

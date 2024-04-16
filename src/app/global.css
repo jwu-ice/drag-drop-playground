@@ -23,43 +23,32 @@
   }
  
     /* 스크롤 관련 | firefox X */
+
   ::-webkit-scrollbar {
-    @apply w-4 h-4;
-  }
+      @apply w-[13px] h-[13px] 
+    }
 
   ::-webkit-scrollbar-thumb {
-    @apply rounded-xl border-[5px] border-solid border-base-100 bg-base-content/30;
+    @apply rounded-xl border-[5px] border-solid border-base-100 bg-base-content/10 
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary-content/50;
+    @apply bg-base-content/30
   }
 
-  p,span,div,li {
+  p,span,div,li,textarea,input {
     @apply text-pretty;
   }
 
-  
-    
+}
+
+
+@layer utilities {
+
 }
 
 .bg-rgba--base-content {
   @apply bg-[rgba(205,205,205,1)]
   /* background-color: oklch(var(--bc)/1) */
   /* background-color: rgba(205, 205, 205, 1); */
-}
-
-
-@layer utilities {
-  .dragging-dark {
-    @apply opacity-100 bg-opacity-100
-  }
-
-  .task ::-webkit-scrollbar-thumb {
-    @apply bg-base-content rounded-xl border-[2px]
-  }
-
-  .task ::-webkit-scrollbar {
-    @apply w-2 h-4
-  }
 }

@@ -9,7 +9,7 @@ const SkeletonVariants = cva("flex animate-pulse flex-col", {
     variant: {
       card: "",
       cardList: "gap-4",
-      kanbanCard: "flex-row gap-4  p-2",
+      kanbanCard: "flex-row gap-4 ",
     },
   },
   defaultVariants: {
