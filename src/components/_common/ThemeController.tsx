@@ -1,30 +1,29 @@
 "use client";
 
 import { DAISYUI_DARK_THEME, DAISYUI_LIGHT_THEME } from "@/constants/theme";
+import { cn } from "@/utils";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 const ThemeController = () => {
-  const { theme, setTheme, systemTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [isMount, setIsMount] = useState(false);
 
-  console.log("theme, systemTheme, resolvedTheme", theme, systemTheme, resolvedTheme);
+  console.log("theme, systemTheme, resolvedTheme", resolvedTheme);
 
-  const TargetIcon = () => (resolvedTheme === "dark" ? <Moon size={16} /> : <Sun size={16} />);
+  const handleToggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark");
 
   useEffect(() => {
     setIsMount(true);
   }, []);
 
-  if (!isMount) return null;
-
-  const handleToggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+  if (!isMount) return;
 
   return (
     <div className="btn btn-ghost btn-sm mr-2 rounded-xl max-sm:btn-xs" onClick={handleToggleTheme}>
-      {isMount && resolvedTheme === "light" && <Sun size={16} />}
-      {isMount && resolvedTheme === "dark" && <Moon size={16} />}
+      <Sun size={16} className={cn(resolvedTheme === "dark" && "hidden")} />
+      <Moon size={16} className={cn(resolvedTheme === "light" && "hidden")} />
     </div>
   );
 };
