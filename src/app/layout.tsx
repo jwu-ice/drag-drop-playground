@@ -7,9 +7,7 @@ import "./global.css";
 import WidthContainer from "@/components/_common/WidthContainer";
 import Header from "@/app/_common/Header";
 import Footer from "@/app/_common/Footer";
-import { Suspense } from "react";
-import { DAISYUI_DARK_THEME } from "@/constants/theme";
-import ClientThemeProvider from "@/providers/ClientThemeProvider";
+import MyThemeProvider from "@/providers/MyThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +25,7 @@ export default async function RootLayout({
     // suppressHydrationWarning
     <html lang="ko" suppressHydrationWarning>
       <body className={` ${inter.className}`}>
-        <ClientThemeProvider>
+        <MyThemeProvider>
           <WidthContainer className="flex flex-col">
             <Header />
             <main className="flex-1">
@@ -36,7 +34,7 @@ export default async function RootLayout({
             </main>
             <Footer />
           </WidthContainer>
-        </ClientThemeProvider>
+        </MyThemeProvider>
       </body>
     </html>
   );

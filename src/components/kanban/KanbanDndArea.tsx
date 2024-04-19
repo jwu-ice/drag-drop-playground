@@ -248,21 +248,27 @@ const KanbanDndArea = () => {
       setTasks(newTasks);
     }
 
-    // if (
-    //   active.data.current?.type === "column" &&
-    //   over?.data.current?.type === "task" &&
-    //   active &&
-    //   over &&
-    //   active.id !== over.id
-    // ) {
-    //   const activeColumnIndex = columns.findIndex((column) => column.id === active.id);
+    if (
+      active.data.current?.type === "column" &&
+      over?.data.current?.type === "task" &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      const activeColumnIndex = columns.findIndex((col) => col.id === active.id);
 
-    //   const columnIdOfOverTask = tasks.find((task) => task.id === over.id)?.columnId;
-    //   const overColumnIndex = columns.findIndex((column) => column.id === columnIdOfOverTask);
+      // const columnIdOfOverTask = tasks.find((task) => task.id === over.id)?.columnId;
+      const overColumnId = collisions?.find((col) => {
+        return active.id === col.id ? false : columnsId.includes(col.id);
+      })?.id;
 
-    //   const newColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
-    //   setColumns(newColumns);
-    // }
+      if (!overColumnId || overColumnId === active.id) return;
+
+      const overColumnIndex = columns.findIndex((col) => col.id === overColumnId);
+      console.log("column -> column", activeColumnIndex, overColumnIndex);
+      const newColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
+      setColumns(newColumns);
+    }
   }
 
   function handleDragEnd(event: DragEndEvent) {

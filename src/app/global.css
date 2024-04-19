@@ -47,8 +47,3 @@
 
 }
 
-.bg-rgba--base-content {
-  @apply bg-[rgba(205,205,205,1)]
-  /* background-color: oklch(var(--bc)/1) */
-  /* background-color: rgba(205, 205, 205, 1); */
-}

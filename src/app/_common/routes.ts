@@ -1,7 +1,8 @@
 export const NAV_ROUTES: LinkType[] = [
   { href: "/", name: "Home" },
-  { href: "/todo", name: "DragDrop" },
+  { href: "/todo", name: "DnD" },
   { href: "/kanban", name: "Kanban" },
+  { href: "/sticker", name: "Sticker" },
 ] as const;
 
 export const AUTH_ROUTES: LinkType[] = [
