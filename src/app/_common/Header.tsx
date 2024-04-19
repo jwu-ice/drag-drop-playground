@@ -7,12 +7,12 @@ import ThemeController from "@/components/_common/ThemeController";
 const Header = () => {
   return (
     <header>
-      <nav className="navbar fixed left-0 top-0 z-50 w-full bg-base-100/90 p-0  backdrop-blur">
+      <nav className="navbar fixed left-0 top-0 z-50 w-full bg-base-100/90 p-0 backdrop-blur duration-300">
         <WidthContainer>
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center">
               <Logo />
-              <div className="space-x-3">
+              <div className="flex gap-3 max-sm:gap-[6px]">
                 {NAV_ROUTES?.slice(1).map(({ href, name }) => {
                   return <ALink href={href} name={name} key={name} />;
                 })}
@@ -33,7 +33,7 @@ const Logo = () => {
   return (
     <Link
       href="/"
-      className="mr-12 flex text-2xl font-bold  italic hover:opacity-80 max-sm:mr-3 max-sm:flex-col"
+      className="mr-12 flex text-2xl font-bold italic hover:opacity-80 max-sm:mr-5 max-sm:flex-col"
     >
       <span className="leading-5">Play</span>
       <span className="leading-5">ground</span>
