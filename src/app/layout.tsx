@@ -7,7 +7,9 @@ import "./global.css";
 import WidthContainer from "@/components/_common/WidthContainer";
 import Header from "@/app/_common/Header";
 import Footer from "@/app/_common/Footer";
-import MyThemeProvider from "@/providers/MyThemeProvider";
+import Script from "next/script";
+import { DAISYUI_DARK_THEME, DAISYUI_LIGHT_THEME, THEME_STORAGE_KEY } from "@/constants/theme";
+import { ThemeProvider } from "next-themes";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +25,9 @@ export default async function RootLayout({
 }>) {
   return (
     // suppressHydrationWarning
-    <html lang="ko" suppressHydrationWarning className="background-transition">
+    <html lang="ko" className="background-transition" suppressHydrationWarning>
       <body className={` ${inter.className}`}>
-        <MyThemeProvider>
+        <ThemeProvider storageKey={THEME_STORAGE_KEY} attribute="data-theme">
           <WidthContainer className="flex flex-col">
             <Header />
             <main className="flex-1">
@@ -34,7 +36,7 @@ export default async function RootLayout({
             </main>
             <Footer />
           </WidthContainer>
-        </MyThemeProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -192,11 +192,6 @@ const KanbanDndArea = () => {
 
   function handleDragOver(event: DragMoveEvent) {
     const { active, over, activatorEvent, collisions } = event;
-    console.log("activatorEvent", activatorEvent);
-    console.log("collisions", collisions);
-    console.log("---DragMove---");
-    console.log("active.id", active.id);
-    console.log("over.id", over?.id);
     // Handle Items Sorting
     if (
       active.data.current?.type === "task" &&
@@ -205,7 +200,6 @@ const KanbanDndArea = () => {
       over &&
       active.id !== over.id
     ) {
-      console.log("1. 태스크끼리 놨을 때");
       const activeColumn = findColumnUsingId(active.id, "task");
       const overColumn = findColumnUsingId(over.id, "task");
 
@@ -215,12 +209,9 @@ const KanbanDndArea = () => {
       const overTaskIndex = tasks.findIndex((task) => task.id === over.id);
 
       if (activeColumn.id === overColumn.id) {
-        console.log("2. 태스크끼리 같은 컬럼일 때");
-
         const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
         setTasks(newTasks);
       } else {
-        console.log("3. 태스크끼리 다른 컬럼일 때");
         tasks[activeTaskIndex].columnId = tasks[overTaskIndex].columnId;
 
         const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
@@ -236,7 +227,6 @@ const KanbanDndArea = () => {
       over &&
       active.id !== over.id
     ) {
-      console.log("4. 태스크를 컬럼에 놨을 때");
       const activeColumn = findColumnUsingId(active.id, "task");
       const overColumn = findColumnUsingId(over.id, "column");
 
@@ -254,19 +244,25 @@ const KanbanDndArea = () => {
       over?.data.current?.type === "task" &&
       active &&
       over &&
-      active.id !== over.id
+      active.id !== over.id &&
+      collisions
     ) {
       const activeColumnIndex = columns.findIndex((col) => col.id === active.id);
 
       // const columnIdOfOverTask = tasks.find((task) => task.id === over.id)?.columnId;
-      const overColumnId = collisions?.find((col) => {
+
+      const closestValues = collisions.filter((col) => col.id !== active.id);
+      console.log("collisions", closestValues);
+
+      const overColumnId = closestValues.find((col) => {
         return active.id === col.id ? false : columnsId.includes(col.id);
       })?.id;
 
       if (!overColumnId || overColumnId === active.id) return;
 
       const overColumnIndex = columns.findIndex((col) => col.id === overColumnId);
-      console.log("column -> column", activeColumnIndex, overColumnIndex);
+      console.log("activeColumnIndex", activeColumnIndex);
+      console.log("overColumnIndex", overColumnIndex);
       const newColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
       setColumns(newColumns);
     }

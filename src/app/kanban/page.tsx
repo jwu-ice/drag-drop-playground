@@ -1,7 +1,7 @@
 import Skeleton from "@/components/_common/Skeleton";
 import dynamic from "next/dynamic";
 
-const KanbanDndArea = dynamic(() => import("@/components/kanban/KanbanDndArea"), {
+const KanbanArea = dynamic(() => import("@/components/kanban/KanbanArea"), {
   loading: () => <Skeleton variant={"kanbanCard"} />,
   ssr: false,
 });
@@ -21,7 +21,7 @@ const KanbanPage = () => {
         </p>
       </div>
       <div className="mt-6">
-        <KanbanDndArea />
+        <KanbanArea />
       </div>
     </section>
   );

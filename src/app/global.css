@@ -46,8 +46,9 @@
 
 
 @layer utilities {
+  
 .background-transition {
-    @apply transition-colors duration-300 
+    @apply transition-colors duration-500 
   }
 }
 
