@@ -23,7 +23,7 @@ export default async function RootLayout({
 }>) {
   return (
     // suppressHydrationWarning
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning className="background-transition">
       <body className={` ${inter.className}`}>
         <MyThemeProvider>
           <WidthContainer className="flex flex-col">

@@ -2,6 +2,7 @@
 
 import TodoItem from "@/components/todo/TodoItem";
 import DragDropContext from "@/providers/DragDropContext";
+import { Todo } from "@/types";
 import {
   DragEndEvent,
   DragStartEvent,

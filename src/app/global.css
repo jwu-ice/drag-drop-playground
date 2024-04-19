@@ -10,6 +10,8 @@
 
 @layer base {
 
+  
+
   html,body {
     @apply h-full ;
   }
@@ -44,6 +46,8 @@
 
 
 @layer utilities {
-
+.background-transition {
+    @apply transition-colors duration-300 
+  }
 }
 

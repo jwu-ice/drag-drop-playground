@@ -1,4 +1,5 @@
 import ALink from "@/components/_common/ALink";
+import { LinkType } from "@/types";
 import React, { HTMLAttributes } from "react";
 
 type Props = {

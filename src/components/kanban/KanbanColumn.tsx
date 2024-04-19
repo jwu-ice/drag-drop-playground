@@ -8,6 +8,7 @@ import { useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { PlusCircle } from "lucide-react";
 import KanbanTask from "@/components/kanban/KanbanTask";
+import { Id, Task } from "@/types";
 
 type Props = {
   id: Id;
