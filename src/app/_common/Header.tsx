@@ -2,10 +2,7 @@ import Link from "next/link";
 import WidthContainer from "@/components/_common/WidthContainer";
 import ALink from "@/components/_common/ALink";
 import { AUTH_ROUTES, NAV_ROUTES } from "@/app/_common/routes";
-import dynamic from "next/dynamic";
 import ThemeController from "@/components/_common/ThemeController";
-import { cookies } from "next/headers";
-import { DAISYUI_DARK_THEME, DAISYUI_LIGHT_THEME } from "@/constants/theme";
 
 const Header = () => {
   return (

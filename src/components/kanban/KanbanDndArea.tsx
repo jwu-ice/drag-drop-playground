@@ -3,6 +3,7 @@
 import KanbanColumn from "@/components/kanban/KanbanColumn";
 import KanbanTask from "@/components/kanban/KanbanTask";
 import DragDropContext from "@/providers/DragDropContext";
+import { Column, Id, Task } from "@/types";
 import {
   closestCenter,
   closestCorners,

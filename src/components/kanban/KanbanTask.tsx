@@ -1,5 +1,6 @@
 "use client";
 
+import { Id, Task } from "@/types";
 import { cn } from "@/utils";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";

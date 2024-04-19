@@ -1,3 +1,5 @@
+import { LinkType } from "@/types";
+
 export const NAV_ROUTES: LinkType[] = [
   { href: "/", name: "Home" },
   { href: "/todo", name: "DnD" },

@@ -1,4 +1,5 @@
 import { sendGetRequest } from "@/apis";
+import { Todo } from "@/types";
 
 export const getApiTodos = () => {
   return sendGetRequest<Todo[]>(
