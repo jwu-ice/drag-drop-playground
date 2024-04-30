@@ -11,7 +11,7 @@ const items = null;
 const KanbanPage = () => {
   return (
     <section className="flex flex-col">
-      <div className=" mb-4 space-y-2">
+      <div className="space-y-2">
         <p>
           칸반은 일본어 발음으로 우리가 흔히 아는 <b>간판(看板)</b>의 일본식 발음이에요.
         </p>
@@ -20,7 +20,7 @@ const KanbanPage = () => {
           방식이에요.
         </p>
       </div>
-      <div className="mt-6">
+      <div className="mt-8">
         <KanbanArea />
       </div>
     </section>
