@@ -1,11 +1,13 @@
 import {
   closestCenter,
   closestCorners,
+  CollisionDetection,
   DndContext,
   DndContextProps,
   KeyboardSensor,
   MouseSensor,
   PointerSensor,
+  pointerWithin,
   TouchSensor,
   useSensor,
   useSensors,
@@ -13,7 +15,7 @@ import {
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 // 모바일 터치 및 클릭에서 자연스러운 움직임을 위해 따로 분리 및 설정
-const DragDropContext = (props: DndContextProps) => {
+const DragDropProvider = (props: DndContextProps) => {
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -32,10 +34,31 @@ const DragDropContext = (props: DndContextProps) => {
   );
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCorners} {...props}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={customCollisionDetectionAlgorithm as CollisionDetection}
+      {...props}
+    >
       {props.children}
     </DndContext>
   );
 };
 
-export default DragDropContext;
+// Ref: https://github.com/clauderic/dnd-kit/issues/900
+function customCollisionDetectionAlgorithm(args: any) {
+  const closestCornersCollisions = closestCorners(args);
+  const closestCenterCollisions = closestCenter(args);
+  const pointerWithinCollisions = pointerWithin(args);
+
+  if (
+    closestCornersCollisions.length > 0 &&
+    closestCenterCollisions.length > 0 &&
+    pointerWithinCollisions.length > 0
+  ) {
+    return closestCornersCollisions;
+  }
+
+  return null;
+}
+
+export default DragDropProvider;

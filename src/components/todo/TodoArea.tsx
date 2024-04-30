@@ -1,7 +1,7 @@
 "use client";
 
 import TodoItem from "@/components/todo/TodoItem";
-import DragDropContext from "@/providers/DragDropContext";
+import DragDropProvider from "@/providers/DragDropProvider";
 import { Todo } from "@/types";
 import {
   DragEndEvent,
@@ -42,7 +42,7 @@ const TodoDndArea = ({ staticData }: { staticData: Todo[] }) => {
   };
 
   return (
-    <DragDropContext id={useId()} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DragDropProvider id={useId()} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <SortableContext items={todos}>
         <ol className="flex flex-col gap-3">
           {todos.map((item, index) => {
@@ -66,7 +66,7 @@ const TodoDndArea = ({ staticData }: { staticData: Todo[] }) => {
           />
         </DragOverlay>
       </SortableContext>
-    </DragDropContext>
+    </DragDropProvider>
   );
 };
 

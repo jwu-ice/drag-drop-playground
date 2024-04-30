@@ -2,31 +2,28 @@
 
 import KanbanColumn from "@/components/kanban/KanbanColumn";
 import KanbanTask from "@/components/kanban/KanbanTask";
-import DragDropContext from "@/providers/DragDropContext";
+import DragDropProvider from "@/providers/DragDropProvider";
 import { Column, Id, Task } from "@/types";
 import {
+  Active,
+  ClientRect,
   closestCenter,
   closestCorners,
+  Collision,
   CollisionDetection,
   defaultDropAnimationSideEffects,
   DragEndEvent,
   DragMoveEvent,
-  DragOverEvent,
   DragOverlay,
   DragStartEvent,
-  getFirstCollision,
-  MeasuringStrategy,
+  DroppableContainer,
   pointerWithin,
-  rectIntersection,
   UniqueIdentifier,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  arrayMove,
-  horizontalListSortingStrategy,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { RectMap } from "@dnd-kit/core/dist/store";
+import { SortableContext, arrayMove } from "@dnd-kit/sortable";
+import { Coordinates } from "@dnd-kit/utilities";
+import { startTransition, useEffect, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
 
 const initialColumn = [
@@ -58,11 +55,13 @@ const KanbanDndArea = () => {
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
+  const [, startTransition] = useTransition();
+
   return (
     <div className="flex overflow-x-auto bg-transparent">
       {/* BUG: DragOver, 태스크의 개수가 적은(높이가 작은) 컬럼에서 큰 컬럼 이동 시 문제
                active column, over가 column이 아닌 task 찍히는 문제가 있음.  */}
-      <DragDropContext
+      <DragDropProvider
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
@@ -110,7 +109,7 @@ const KanbanDndArea = () => {
           </DragOverlay>,
           document.body,
         )}
-      </DragDropContext>
+      </DragDropProvider>
       <div className="mx-4 flex w-64 max-sm:w-44">
         <button className="btn btn-outline basis-40" onClick={createNewColumn}>
           + Add Column
@@ -191,7 +190,9 @@ const KanbanDndArea = () => {
   }
 
   function handleDragOver(event: DragMoveEvent) {
-    const { active, over, activatorEvent, collisions } = event;
+    const { active, over, collisions } = event;
+    console.log("---DRAG OVER---");
+
     // Handle Items Sorting
     if (
       active.data.current?.type === "task" &&
@@ -202,6 +203,7 @@ const KanbanDndArea = () => {
     ) {
       const activeColumn = findColumnUsingId(active.id, "task");
       const overColumn = findColumnUsingId(over.id, "task");
+      console.log("activeCoulmn, overColumn", activeColumn, overColumn);
 
       if (!activeColumn || !overColumn) return;
 
@@ -215,7 +217,9 @@ const KanbanDndArea = () => {
         tasks[activeTaskIndex].columnId = tasks[overTaskIndex].columnId;
 
         const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
-        setTasks(newTasks);
+        startTransition(() => {
+          setTasks(newTasks);
+        });
       }
     }
 
@@ -236,7 +240,10 @@ const KanbanDndArea = () => {
 
       let newTasks = [...tasks];
       newTasks[activeTaskIndex].columnId = overColumn.id;
-      setTasks(newTasks);
+
+      startTransition(() => {
+        setTasks(newTasks);
+      });
     }
 
     if (
@@ -264,7 +271,10 @@ const KanbanDndArea = () => {
       console.log("activeColumnIndex", activeColumnIndex);
       console.log("overColumnIndex", overColumnIndex);
       const newColumns = arrayMove(columns, activeColumnIndex, overColumnIndex);
-      setColumns(newColumns);
+
+      startTransition(() => {
+        setColumns(newColumns);
+      });
     }
   }
 
@@ -314,26 +324,25 @@ const KanbanDndArea = () => {
         const newTasks = arrayMove(tasks, activeTaskIndex, overTaskIndex);
         setTasks(newTasks);
       }
+    }
 
-      //  컬럼에 태스크 놓을 때
-      if (
-        active.data.current?.type === "task" &&
-        over?.data.current?.type === "column" &&
-        active &&
-        over &&
-        active.id !== over.id
-      ) {
-        const activeColumn = findColumnUsingId(active.id, "task");
-        const overColumn = findColumnUsingId(over.id, "column");
+    if (
+      active.data.current?.type === "task" &&
+      over?.data.current?.type === "column" &&
+      active &&
+      over &&
+      active.id !== over.id
+    ) {
+      const activeColumn = findColumnUsingId(active.id, "task");
+      const overColumn = findColumnUsingId(over.id, "column");
 
-        if (!activeColumn || !overColumn) return;
+      if (!activeColumn || !overColumn) return;
 
-        const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
+      const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
 
-        const newTasks = [...tasks];
-        newTasks[activeTaskIndex].columnId = over.id;
-        setTasks(newTasks);
-      }
+      const newTasks = [...tasks];
+      newTasks[activeTaskIndex].columnId = over.id;
+      setTasks(newTasks);
     }
   }
   function findColumnUsingId(id: UniqueIdentifier | undefined, type: "column" | "task") {
